@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>個人讀書管理網頁</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <nav>
+      <button id="todoBtn">To-Do</button>
+      <button id="calendarBtn">行事曆</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- To-Do Page -->
+    <section id="todoSection">
+      <div class="timer">
+        <h2>讀書倒數計時器</h2>
+        <input type="number" id="minutes" placeholder="分鐘" min="1" />
+        <button onclick="startTimer()">開始</button>
+        <button onclick="pauseTimer()">暫停</button>
+        <button onclick="resetTimer()">重設</button>
+        <h3 id="countdown">00:00</h3>
+      </div>
+      <div class="todo-list">
+        <h2>To-Do List</h2>
+        <input type="text" id="todoInput" placeholder="新增任務" />
+        <button onclick="addTodo()">新增</button>
+        <ul id="todoItems"></ul>
+      </div>
+    </section>
+
+    <!-- Calendar Page -->
+    <section id="calendarSection" style="display: none">
+      <div class="calendar">
+        <h2>行事曆</h2>
+        <div id="calendar"></div>
+        <div id="eventForm">
+          <input type="date" id="eventDate" />
+          <input type="text" id="eventText" placeholder="新增行程" />
+          <button onclick="addEvent()">新增</button>
+        </div>
+        <ul id="eventList"></ul>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
