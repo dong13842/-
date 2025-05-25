@@ -1,31 +1,30 @@
-/* 1. 讓 calendar-app 使用 flex 且高100vh */
 #calendar-app {
   display: flex;
   gap: 20px;
-  height: 100vh;      /* 佔滿全螢幕高度 */
+  height: 100vh; 
   padding: 20px;
   box-sizing: border-box;
-  align-items: stretch; /* 子元素等高 */
-  background: #f0f2f5;
+  align-items: stretch; 
+  background: linear-gradient(to bottom,#a5e6ff,#ff96f8);
 }
 
-/* 2. 月曆左邊區塊 */
+
 #calendar {
   flex: 7;
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: #87ceeb; /* 天空藍 */
-  border-radius: 8px;        /* 順便加個圓角，看起來更柔和 */
-  padding: 10px;             /* 內距讓內容不貼邊 */
-  box-sizing: border-box;    /* 確保 padding 不影響寬高 */
+  background: linear-gradient(to bottom,#a5e6ff,#ff96f8);
+  border-radius: 8px;  
+  padding: 10px;             
+  box-sizing: border-box;    
 }
 
-/* 新增標題樣式 */
+
 #calendar-title {
   font-size: 2rem;
   font-weight: 700;
-  color: #004080;
+  color: #003366;
   margin-bottom: 10px;
   user-select: none;
   display: flex;
@@ -33,7 +32,7 @@
   gap: 8px;
 }
 
-/* 閃亮星星動畫 */
+
 .shiny-star {
   display: inline-block;
   animation: twinkle 1.5s infinite alternate;
@@ -75,7 +74,6 @@
   overflow: hidden;
 }
 
-/* 月曆標題列 */
 #calendar-header {
   display: flex;
   justify-content: space-between;
@@ -86,7 +84,7 @@
 }
 
 #calendar-header button {
-  background: #2980b9;
+  background: #a5e6ff;
   border: none;
   color: white;
   font-size: 1.3rem;
@@ -97,27 +95,25 @@
 }
 
 #calendar-header button:hover {
-  background: #1f6391;
+  background: #003366;
 }
 
-/* 星期欄 */
 #calendar-weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   text-align: center;
   font-weight: 600;
-  color: #2980b9;
+  color: #1f6391;
   border-bottom: 1px solid #ddd;
   padding-bottom: 5px;
   margin-bottom: 5px;
 }
 
-/* 日期格子區 */
 #calendar-days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 8px;
-  flex: 1;  /* 填滿剩餘空間 */
+  flex: 1;
   overflow-y: auto;
   padding-bottom: 10px;
   max-height:fit-content;
@@ -128,10 +124,10 @@
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  min-height: 60px;  /* 固定高度 */
+  min-height: 60px; 
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* 置頂，不置中 */
+  justify-content:flex-start;
   user-select: none;
 }
 
@@ -140,7 +136,7 @@
 }
 
 #calendar-days .today {
-  background-color: #2980b9;
+  background-color: #a5e6ff;
   color: white;
   font-weight: bold;
   border-radius: 5px;
@@ -151,7 +147,6 @@
   cursor: default;
 }
 
-/* 3. 新增行程右邊區塊 */
 #event-input {
   flex: 3;
   background: #fff;
@@ -161,19 +156,17 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  height: 100%;  /* 和左邊等高 */
+  height: 100%;
   font-family: inherit;
   font-size: 1rem;
   overflow: hidden;
 }
 
-/* 標題 */
 #event-input h3 {
   margin-top: 0;
   margin-bottom: 15px;
 }
 
-/* 表單 */
 #event-input label {
   font-weight: bold;
   display: block;
@@ -201,10 +194,9 @@
   margin-bottom: 10px;
 }
 
-/* 新增按鈕 */
 #event-input button[type="submit"] {
-  background-color: #2980b9;
-  color: white;
+  background-color: #a5e6ff;
+  color: #003366;
   border: none;
   border-radius: 5px;
   padding: 10px;
@@ -215,17 +207,15 @@
 }
 
 #event-input button:hover {
-  background-color: #1f6391;
+  background-color: #003366;
 }
 
-/* 表單整體 */
 #event-form {
   display: flex;
   flex-direction: column;
   margin-bottom: 10px;
 }
 
-/* 行程列表區 */
 #event-list {
   margin-top: 10px;
   flex: 1;
@@ -235,7 +225,7 @@
   font-size: 0.95rem;
 }
 
-/* 手機響應式 */
+
 @media (max-width: 768px) {
   #calendar-app {
     flex-direction: column;
@@ -251,7 +241,6 @@
   }
 }
 
-/* 行程在日曆中的標示樣式 */
 .calendar-event-count {
   margin-top: 4px;
   font-size: 0.8rem;
@@ -267,7 +256,6 @@
   text-overflow: ellipsis;
 }
 
-/* 日期數字 + 行程數 */
 .day-number {
   font-size: 1rem;
   font-weight: bold;
@@ -279,10 +267,9 @@
   width: 100%;
 }
 
-/* 點選後日期背景色與邊框 */
 .selected-day {
-  background-color: #cce5ff; /* 淡寶寶藍背景 */
+  background-color: #cce5ff; 
   border-radius: 8px;
   border: 2px solid #339af0;
-  color: #003366; /* 深色字 */
+  color: #003366;
 }
