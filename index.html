@@ -1,53 +1,108 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>個人讀書管理網頁</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>管好自己 - 年度目標</title>
+  <link rel="stylesheet" href="AnnualGoal.css" />
+  <link rel="stylesheet" href="Calendar.css" />
 </head>
 <body>
-  <header>
-    <nav>
-      <button id="todoBtn">To-Do</button>
-      <button id="calendarBtn">行事曆</button>
-    </nav>
-  </header>
 
-  <main>
-    <!-- To-Do Page -->
-    <section id="todoSection">
-      <div class="timer">
-        <h2>讀書倒數計時器</h2>
-        <input type="number" id="minutes" placeholder="分鐘" min="1" />
-        <button onclick="startTimer()">開始</button>
-        <button onclick="pauseTimer()">暫停</button>
-        <button onclick="resetTimer()">重設</button>
-        <h3 id="countdown">00:00</h3>
-      </div>
-      <div class="todo-list">
-        <h2>To-Do List</h2>
-        <input type="text" id="todoInput" placeholder="新增任務" />
-        <button onclick="addTodo()">新增</button>
-        <ul id="todoItems"></ul>
-      </div>
-    </section>
+  <nav>
+    <ul>
+      <li><a href="#goal">Annual Goal</a></li>
+      <li><a href="#planning">Planning</a></li>
+      <li><a href="#calendar">Calendar</a></li>
+      <li><a href="#todo">TO-DO</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
 
-    <!-- Calendar Page -->
-    <section id="calendarSection" style="display: none">
-      <div class="calendar">
-        <h2>行事曆</h2>
-        <div id="calendar"></div>
-        <div id="eventForm">
-          <input type="date" id="eventDate" />
-          <input type="text" id="eventText" placeholder="新增行程" />
-          <button onclick="addEvent()">新增</button>
+ <!--ANNUAL GOAL-->
+  <section id="goal" class="full-screen-goal">
+  <h2><span class="emoji">🎯</span> 我的年度目標</h2>
+  <div class="goal-list">
+    <label class="goal-item-label">
+      <span class="emoji">👑</span>
+      <input type="text" class="goal-item" placeholder="目標一" />
+    </label>
+    <label class="goal-item-label">
+      <span class="emoji">👑</span>
+      <input type="text" class="goal-item" placeholder="目標二" />
+    </label>
+    <label class="goal-item-label">
+      <span class="emoji">👑</span>
+      <input type="text" class="goal-item" placeholder="目標三" />
+    </label>
+    <label class="goal-item-label">
+      <span class="emoji">👑</span>
+      <input type="text" class="goal-item" placeholder="目標四" />
+    </label>
+    <label class="goal-item-label">
+      <span class="emoji">👑</span>
+      <input type="text" class="goal-item" placeholder="目標五" />
+    </label>
+  </div>
+  <button id="save-goal-btn">儲存目標</button>
+  <div id="fireworks-container"></div>
+</section>
+
+<!--PLANNING-->
+  <section id="planning">
+    <h2>規劃區</h2>
+    <p>這裡可以安排長期與短期計畫。</p>
+  </section>
+
+<!--Calendar-->
+  <section id="calendar-app">
+  <section id="calendar">
+    <div id="calendar-wrapper">
+      <h2 id="calendar-title">Calendar <span class="shiny-star">✨</span></h2>
+      <div id="calendar-container">
+        <div id="calendar-header">
+          <button id="prev-month">&lt;</button>
+          <span id="month-year"></span>
+          <button id="next-month">&gt;</button>
         </div>
-        <ul id="eventList"></ul>
+        <div id="calendar-weekdays">
+          <div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
+        </div>
+        <div id="calendar-days"></div>
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
+  <div id="event-input">
+    <form id="event-form">
+      <h3>🆕 新增行程</h3>
+      <label for="event-date">📅 日期：</label>
+      <input type="date" id="event-date" required />
+      <br /><br />
+      <label for="event-desc">📝 行程內容：</label>
+      <textarea id="event-desc" required></textarea>
+      <br /><br />
+      <button type="submit">新增行程</button>
+    </form>
+    <div id="event-message" style="margin-top: 1rem; color: green;"></div>
 
-  <script src="script.js"></script>
+    <!-- 新增行程列表區塊 -->
+    <div id="event-list"></div>
+  </div>
+</section>
+
+
+
+  <section id="todo">
+    <h2>待辦清單</h2>
+    <p>記錄與追蹤當日任務。</p>
+  </section>
+
+  <section id="contact">
+    <h2>聯絡我們</h2>
+    <p>有任何意見或建議，歡迎聯絡我們。</p>
+  </section>
+
+  <script src="AnnualGoal.js"></script>
+  <script src="Calendar.js"></script>
 </body>
 </html>
