@@ -14,38 +14,106 @@ body {
     color: #333;
 }
 
+/* Welcome Section */
+#welcome {
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: transparent; 
+    color: rgb(255, 255, 255);
+    padding: 120px 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-content {
+    z-index: 10;
+    max-width: 800px;
+    margin-bottom: 50px;
+}
+
+.welcome-content h1 {
+    font-size: 3.8rem;
+    margin-bottom: 20px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.welcome-content .subtitle {
+    font-size: 1.6rem;
+    line-height: 1.5;
+    margin-bottom: 40px;
+    opacity: 0.9;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.start-button {
+    padding: 18px 45px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background-color: #5e57db;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.start-button:hover {
+    background-color: #804daf;
+    transform: translateY(-3px); /* 輕微上浮效果 */
+}
+
 /* ===== Navigation Bar ===== */
 nav {
     position: fixed;
     top: 0;
+    left: 0;
     width: 100%;
-    background: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    z-index: 999;
+    background-color: #003366;
+    color: white;
+    padding: 10px 20px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    height: 60px; 
+    z-index: 1000;
+    font-weight: bold; 
+    border-top-left-radius: 15px; 
+    border-top-right-radius: 15px;
 }
 
-nav ul {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    padding: 1em 0;
-}
-
-nav ul li {
-    margin: 0 15px;
-}
-
-
-
-nav ul li a {
+.navbar-brand a {
+    color: white;
     text-decoration: none;
-    color: #007bff;
-    font-weight: 700;
-    transition: color 0.3s;
+    font-size: 1.8rem;
+    font-weight: bold; 
 }
 
-nav ul li a:hover {
-    color: #0056b3;
+/* 導覽連結列表 */
+.navbar-links {
+    list-style: none; /* 移除列表點 */
+    margin: 0 auto;
+    padding: 0;
+    display: flex; /* 水平排列連結 */
+    gap: 150px; /* 連結間距 */
+}
+
+/* 導覽連結單個項目 */
+.navbar-links li a {
+    color: white; /* 連結文字顏色 */
+    text-decoration: none; /* 移除下劃線 */
+    font-size: 1.1rem; /* 字體大小 */
+    padding: 5px 0; /* 內邊距 */
+}
+
+/* 連結懸停效果 */
+.navbar-links li a:hover {
+    color: #a5e6ff; /* 懸停顏色 */
 }
 
 /* ===== Section Base Styles ===== */
@@ -70,25 +138,22 @@ section h2 {
 }
 
 /* ===== Annual Goal Section ===== */
-.full-screen-goal {
+.goal-card {
     padding: 40px 30px;
     min-height: 100vh;
     background: transparent;
-    display: flex;
+    position: relative;
+    display: flex; 
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    position: relative;
+    justify-content: flex-start; /* 將內容頂部對齊 */
 }
 
-.full-screen-goal h2 {
-    font-size: 2.5rem;
-    margin-bottom: 30px;
-    color: #2c3e50;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.goal-item.saved {
+    border: none !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+    cursor: default; /* 讓滑鼠游標變成預設箭頭，表示不可編輯 */
 }
 
 .emoji {
@@ -132,12 +197,6 @@ section h2 {
     box-shadow: 0 0 8px rgba(230, 126, 34, 0.6);
 }
 
-.no-border {
-    border: none !important;
-    box-shadow: none !important;
-    background-color: transparent !important;
-}
-
 #save-goal-btn {
     padding: 14px 40px;
     font-size: 1.2rem;
@@ -152,6 +211,178 @@ section h2 {
 
 #save-goal-btn:hover {
     background-color: #305c78;
+}
+
+.no-border {
+    border: none !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+}
+
+/* 新增的容器樣式，實現左右佈局 */
+.main-content-container {
+    display: flex;
+    justify-content: space-between; /* 左右兩側間距 */
+    width: 100%;
+    max-width: 1200px; /* 限制最大寬度，避免內容過寬 */
+    gap: 30px; /* 左右兩欄之間的間距 */
+    flex-wrap: wrap; /* 在小螢幕上換行 */
+    margin-top: 20px; /* 與標題的間距 */
+}
+
+.info-section {
+    flex: 2; /* 佔據 40% 寬度 (2 / (3+2) = 0.4) */
+    min-width: 280px; /* 最小寬度 */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* 天氣卡片樣式 */
+.cards-container {
+    display: flex;
+    flex-wrap: wrap; /* 允許換行 */
+    justify-content: center; /* 水平居中 */
+    gap: 30px; /* 卡片間距 */
+    width: 100%;
+    max-width: 1200px; /* 限制最大寬度 */
+    margin-top: 50px; /* 與歡迎內容的間距 */
+    z-index: 10; /* 確保在漸層背景之上 */
+}
+
+.weather-card, .horoscope-card, .goal-card {
+    flex: 1; /* 讓卡片彈性伸展 */
+    min-width: 300px; /* 最小寬度，防止過度壓縮 */
+    max-width: 450px; /* 設定最大寬度 */
+    background-color: rgba(255, 255, 255, 0.95); /* 更淺的白色背景 */
+    border-radius: 15px; /* 更圓潤的邊角 */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12); /* 更柔和且明顯的陰影 */
+    padding: 30px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* 增加 hover 動畫 */
+}
+
+.weather-card:hover, .horoscope-card:hover, .goal-card:hover {
+    transform: translateY(-5px); /* 輕微上浮效果 */
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18); /* hover 時陰影更明顯 */
+}
+
+.weather-card h3, .horoscope-card h3, .goal-card h3 {
+    font-size: 2rem; /* 增大標題字體 */
+    color: #34495e; /* 更深的顏色 */
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px; /* 增大 emoji 和文字間距 */
+    font-weight: 700;
+}
+
+.weather-card p {
+    font-size: 1.2rem; /* 增大文字 */
+    color: #555;
+    margin-bottom: 10px;
+}
+
+#weather-temp {
+    font-size: 3rem; /* 溫度數字更顯眼 */
+    font-weight: bold;
+    color: #e67e22; /* 溫暖的橘色 */
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+/* 星座運勢選擇器樣式 */
+.horoscope-selector {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.horoscope-selector label {
+    font-size: 1.2rem;
+    color: #34495e;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+#horoscope-select {
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    border: 2px solid #667eea; /* 與歡迎區塊色調一致 */
+    border-radius: 10px;
+    outline: none;
+    cursor: pointer;
+    background-color: #fcfcfc;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    width: 90%;
+    max-width: 300px;
+    appearance: none; /* 移除預設下拉箭頭 */
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%232c3e50" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>'); /* 自定義箭頭 */
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 20px;
+}
+
+#horoscope-select:focus {
+    border-color: #764ba2;
+    box-shadow: 0 0 10px rgba(118, 75, 162, 0.4);
+}
+
+#horoscope-result {
+    font-size: 1.2rem;
+    color: #444;
+    line-height: 1.7;
+    margin-top: 15px;
+}
+
+@media (max-width: 992px) { /* 調整斷點，讓卡片更早堆疊 */
+    .cards-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 25px;
+    }
+    .weather-card, .horoscope-card, .goal-card { /* 確保所有卡片都適用 */
+        min-width: unset;
+        width: 90%;
+        max-width: 500px; /* 限制在平板上的最大寬度 */
+    }
+}
+
+@media (max-width: 768px) {
+    section {
+        padding: 60px 15px;
+    }
+    section h2 {
+        font-size: 2.2rem;
+    }
+    .welcome-content h1 {
+        font-size: 2.5rem;
+    }
+    .welcome-content .subtitle {
+        font-size: 1.2rem;
+    }
+    .start-button {
+        font-size: 1.1rem;
+        padding: 12px 30px;
+    }
+    .weather-card h3, .horoscope-card h3, .goal-card {
+        font-size: 1.6rem;
+    }
+    #weather-temp {
+        font-size: 2.5rem;
+    }
+    .horoscope-selector label {
+        font-size: 1.1rem;
+    }
+    #horoscope-select {
+        font-size: 1rem;
+    }
+    #horoscope-result {
+        font-size: 1.1rem;
+    }
 }
 
 #fireworks-container {
@@ -487,7 +718,7 @@ section h2 {
 }
 
 /* ===== To-Do and Pomodoro Sections ===== */
-/* Main container: 60% / 40% split */
+
 .main-container {
     display: flex;
     justify-content: space-between;
