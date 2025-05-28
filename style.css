@@ -260,7 +260,9 @@ section h2 {
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12); /* 更柔和且明顯的陰影 */
     padding: 30px;
     text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* 增加 hover 動畫 */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 600px;
+    overflow:auto;
 }
 
 .weather-card:hover, .horoscope-card:hover, .goal-card:hover {
@@ -447,11 +449,16 @@ section h2 {
 #calendar-app {
     display: flex;
     gap: 20px;
-    height: 100vh;
+    height: 80vh;
     padding: 20px;
     box-sizing: border-box;
     align-items: stretch;
     background:transparent;
+    min-height: 500px;
+}
+
+#calendar, #event-input {
+    height: 100%;
 }
 
 #calendar {

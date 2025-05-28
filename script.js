@@ -397,7 +397,7 @@ function renderCalendar() {
         if (events[fullDateStr] && events[fullDateStr].length > 0) {
             const eventCountSpan = document.createElement('span');
             eventCountSpan.classList.add('calendar-event-count');
-            eventCountSpan.textContent = `${events[fullDateStr].length} 項`;
+            eventCountSpan.textContent = `📌${events[fullDateStr].length} `;
             dayNumberSpan.appendChild(eventCountSpan);
         }
 
