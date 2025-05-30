@@ -31,7 +31,6 @@
 
   <!-- 浮動小卡 -->
   <section id="cards" class="page" style="position: relative;">
-    <!-- 新增煙火容器 -->
     <div class="cards-container">
       <!-- 年度目標小卡 -->
       <div class="card cute-card" id="goal-card" style="position: relative;">
@@ -63,29 +62,42 @@
 
   <!-- 月曆 -->
   <section id="calendar" class="page">
-    <div class="calendar-wrapper">
-      <!-- 左：月曆 -->
-      <div class="calendar-left">
-        <div class="calendar-header">
-          <button id="prev-month" class="calendar-nav-btn">←</button>
-          <span id="calendar-title"></span>
-          <button id="next-month" class="calendar-nav-btn">→</button>
+    <div id="calendar-app">
+      <!-- 新增事項區 -->
+      <div id="event-input">
+        <div class="calendar-panel-title">
+          <span class="shiny-star">✨</span>
+          <span>calendar</span>
         </div>
-        <div id="calendar"></div>
-      </div>
-      <!-- 右：新增事項 -->
-      <div class="calendar-right">
-        <h2>新增事項</h2>
-        <form id="calendar-todo-form">
-          <label>日期
-            <input type="date" id="calendar-date" required>
-          </label>
-          <label>事項
-            <input type="text" id="calendar-todo" maxlength="20" required>
-          </label>
-          <button class="cute-btn" type="submit">新增</button>
+        <form id="event-form">
+          <div class="event-form-col">
+            <label for="event-date-fake">日期</label>
+            <input type="date" id="event-date" style="display:none;">
+            <input type="text" id="event-date-fake" readonly placeholder="月/日" />
+          </div>
+          <div class="event-form-col">
+            <label for="event-desc">事項</label>
+            <textarea id="event-desc" maxlength="50" required placeholder="請輸入事項"></textarea>
+          </div>
+          <div class="event-form-col event-form-btn-col">
+            <button type="submit">新增</button>
+          </div>
         </form>
-        <div id="calendar-todo-list"></div>
+        <div id="event-list"></div>
+      </div>
+      <!-- 月曆主體 -->
+      <div id="calendar">
+        <div id="calendar-container">
+          <div id="calendar-header">
+            <button id="prev-month">←</button>
+            <span id="calendar-month-title-inner"></span>
+            <button id="next-month">→</button>
+          </div>
+          <div id="calendar-weekdays">
+            <div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
+          </div>
+          <div id="calendar-days"></div>
+        </div>
       </div>
     </div>
   </section>
@@ -93,7 +105,7 @@
   <!-- 代辦事項 -->
   <section id="todo" class="page">
     <div class="todo-main-flex">
-      <!-- 左：浮動番茄鐘 -->
+      <!-- 浮動番茄鐘 -->
       <div class="pomodoro-box">
         <div class="pomodoro-section">
           <div class="tomato" id="tomato">
@@ -110,23 +122,23 @@
           <div class="pomo-settings-row">
             <div class="pomo-setting-col">
               <span class="pomo-label">工作</span>
-              <button class="pomo-mini-btn" id="work-minus">−</button>
+              <button class="pomo-mini-btn" id="work-minus">-</button>
               <span class="pomo-num" id="work-minutes">50</span>
-              <button class="pomo-mini-btn" id="work-plus">＋</button>
+              <button class="pomo-mini-btn" id="work-plus">+</button>
               <span class="pomo-unit">分鐘</span>
             </div>
             <div class="pomo-setting-col">
               <span class="pomo-label">休息</span>
-              <button class="pomo-mini-btn" id="rest-minus">−</button>
+              <button class="pomo-mini-btn" id="rest-minus">-</button>
               <span class="pomo-num" id="rest-minutes">10</span>
-              <button class="pomo-mini-btn" id="rest-plus">＋</button>
+              <button class="pomo-mini-btn" id="rest-plus">+</button>
               <span class="pomo-unit">分鐘</span>
             </div>
             <div class="pomo-setting-col">
               <span class="pomo-label">循環</span>
-              <button class="pomo-mini-btn" id="cycle-minus">−</button>
+              <button class="pomo-mini-btn" id="cycle-minus">-</button>
               <span class="pomo-num" id="cycle-times">1</span>
-              <button class="pomo-mini-btn" id="cycle-plus">＋</button>
+              <button class="pomo-mini-btn" id="cycle-plus">+</button>
               <span class="pomo-unit">次</span>
             </div>
           </div>
@@ -137,7 +149,7 @@
           </div>
         </div>
       </div>
-      <!-- 右：新增代辦 -->
+      <!-- 新增代辦 -->
       <div class="todo-container">
         <form id="todo-form">
           <input type="text" id="todo-input" placeholder="新增代辦事項..." maxlength="30" required>

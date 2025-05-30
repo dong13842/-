@@ -21,7 +21,6 @@ const goalBtn = document.getElementById('save-goal');
 const fireworksContainer = document.getElementById('fireworks-container');
 const goalInputGroup = document.getElementById('goal-input-group');
 const goalDisplayList = document.getElementById('goal-display-list');
-
 let isEditingGoal = true;
 
 // 讀取年度目標
@@ -31,7 +30,6 @@ db.ref('goal').on('value', snap => {
   showGoalMode(isEditingGoal, arr);
   goalBtn.textContent = isEditingGoal ? "儲存目標" : "修改目標";
 });
-
 
 // 按鈕切換：儲存/修改
 goalBtn.onclick = async function () {
@@ -49,14 +47,11 @@ goalBtn.onclick = async function () {
     goalInputs[0].focus();
   }
 };
-
 function showGoalMode(editMode, dataArr) {
   if (editMode) {
     goalInputGroup.style.display = '';
     goalDisplayList.style.display = 'none';
   } else {
-
-    // 顯示靜態目標
     goalInputGroup.style.display = 'none';
     goalDisplayList.style.display = '';
     const arr = dataArr || goalInputs.map(inp => inp.value.trim());
@@ -74,17 +69,14 @@ function showGoalMode(editMode, dataArr) {
     }
   }
 }
-
-
-//煙火動畫
+// 煙火動畫
 function launchFireworks() {
   const colors = ['red', 'orange', 'yellow', 'blue', 'green', 'purple'];
   const numFireworks = 18;
-  const cardRect = document.getElementById('goal-card').getBoundingClientRect();
   const container = fireworksContainer;
-  container.innerHTML = ""; 
-  const cx = container.offsetWidth / 2 || 200; 
-  const cy = 80; 
+  container.innerHTML = "";
+  const cx = container.offsetWidth / 2 || 200;
+  const cy = 80;
   const R = 60;
   for (let i = 0; i < numFireworks; i++) {
     const angle = 2 * Math.PI * (i / numFireworks);
@@ -127,8 +119,15 @@ if (navigator.geolocation) {
 }
 
 // ==================== 今日代辦小卡 ====================
+function getLocalDateStr(dateObj) {
+  const y = dateObj.getFullYear();
+  const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const d = String(dateObj.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
 function renderTodayTodoCard() {
-  const todayStr = new Date().toISOString().slice(0, 10);
+  const todayStr = getLocalDateStr(new Date());
   db.ref(`calendarTodos/${todayStr}`).on('value', snap => {
     const ul = document.getElementById('today-todo-list');
     ul.innerHTML = '';
@@ -144,158 +143,183 @@ function renderTodayTodoCard() {
 renderTodayTodoCard();
 
 // ==================== 月曆區塊 ====================
-const calendarDiv = document.getElementById('calendar');
-const calendarForm = document.getElementById('calendar-todo-form');
-const calendarTodoList = document.getElementById('calendar-todo-list');
-const getDaysInMonth = (y, m) => new Date(y, m + 1, 0).getDate();
-let selectedMonth = new Date();
+let currentMonth = new Date();
+let selectedDate = getLocalDateStr(new Date());
 
+// 月曆渲染
 function renderCalendar() {
-  calendarDiv.innerHTML = '';
-  const now = new Date();
-  const y = selectedMonth.getFullYear();
-  const m = selectedMonth.getMonth();
-  const firstDay = new Date(y, m, 1).getDay();
-  const days = getDaysInMonth(y, m);
-  // 週標題
-  const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
-  weekDays.forEach(w => {
-    const th = document.createElement('div');
-    th.textContent = w;
-    th.style.fontWeight = 'bold';
-    calendarDiv.appendChild(th);
-  });
-  // 空格
-  for (let i = 0; i < firstDay; i++) {
-    calendarDiv.appendChild(document.createElement('div'));
-  }
-  // 取出所有 calendarTodos
-  db.ref('calendarTodos').once('value', snap => {
-    const todos = snap.val() || {};
-    for (let d = 1; d <= days; d++) {
-      const dateStr = `${y}-${(m + 1).toString().padStart(2, '0')}-${d.toString().padStart(2, '0')}`;
-      const dayDiv = document.createElement('div');
-      dayDiv.className = 'calendar-day';
-      dayDiv.textContent = d;
-      if (dateStr === now.toISOString().slice(0, 10)) dayDiv.classList.add('today');
-      if (todos[dateStr] && todos[dateStr].length) {
-        const pin = document.createElement('span');
-        pin.className = 'calendar-pin';
-        pin.textContent = '📌' + todos[dateStr].length;
-        dayDiv.appendChild(pin);
+  const year = currentMonth.getFullYear();
+  const month = currentMonth.getMonth();
+  document.getElementById('calendar-month-title-inner').textContent = `${year}年${month + 1}月`;
+  const daysContainer = document.getElementById('calendar-days');
+  daysContainer.innerHTML = "";
+
+  db.ref('calendarTodos').once('value').then(allSnap => {
+    const allTodos = allSnap.val() || {};
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const firstDayOfWeek = new Date(year, month, 1).getDay();
+
+    // 空白補齊
+    for (let i = 0; i < firstDayOfWeek; i++) {
+      daysContainer.appendChild(document.createElement('div'));
+    }
+
+    // 當月天數
+    for (let d = 1; d <= daysInMonth; d++) {
+      const thisDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      const day = document.createElement('div');
+      day.innerHTML = `<span class="day-number">${d}</span>`;
+
+      // 今天高亮
+      const today = new Date();
+      if (
+        year === today.getFullYear() &&
+        month === today.getMonth() &&
+        d === today.getDate()
+      ) {
+        day.classList.add('today');
       }
-      dayDiv.onclick = () => showDayTodos(dateStr);
-      calendarDiv.appendChild(dayDiv);
+      // 選中日高亮
+      if (selectedDate === thisDate) {
+        day.classList.add('selected-day');
+      }
+      // 有事項則顯示📌+數量（修正：加 span.pin-emoji 以利CSS置中）
+      if (allTodos[thisDate] && allTodos[thisDate].length > 0) {
+        day.innerHTML += `<div class="calendar-event-count"><span class="pin-emoji">📌</span>${allTodos[thisDate].length}</div>`;
+      }
+      // 點選後只切換選中狀態（不重建整個日曆）
+      day.onclick = () => {
+        daysContainer.querySelectorAll('.selected-day').forEach(e => e.classList.remove('selected-day'));
+        day.classList.add('selected-day');
+        selectedDate = thisDate;
+        document.getElementById('event-date').value = selectedDate;
+        document.getElementById('event-date-fake').value = showMonthDay(selectedDate);
+        renderEventList(selectedDate);
+      };
+      daysContainer.appendChild(day);
     }
   });
 }
-function showDayTodos(dateStr) {
-  db.ref(`calendarTodos/${dateStr}`).once('value', snap => {
+
+// 事項清單渲染
+function renderEventList(date) {
+  db.ref(`calendarTodos/${date}`).once('value').then(snap => {
     const list = snap.val() || [];
-    calendarTodoList.innerHTML = `<h3 style="margin-top:0;">${dateStr} 事項：</h3>`;
-    if (list.length === 0) {
-      calendarTodoList.innerHTML += '<div>沒有事項！</div>';
-      return;
+    const el = document.getElementById('event-list');
+    if (list.length) {
+      el.innerHTML = `<ul>${list.map((item, idx) => `
+        <li>
+          ${item}
+          <button class="event-delete-btn" title="刪除" onclick="deleteEvent('${date}', ${idx})">&times;</button>
+        </li>
+      `).join('')}</ul>`;
+    } else {
+      el.innerHTML = "<div class='empty'>（此日暫無事項）</div>";
     }
-    const ul = document.createElement('ul');
-    list.forEach(todo => {
-      const li = document.createElement('li');
-      li.textContent = todo;
-      ul.appendChild(li);
-    });
-    calendarTodoList.appendChild(ul);
   });
 }
-// 新增事項
-calendarForm.onsubmit = e => {
-  e.preventDefault();
-  const date = document.getElementById('calendar-date').value;
-  const todo = document.getElementById('calendar-todo').value.trim();
-  if (!date || !todo) return;
-  db.ref(`calendarTodos/${date}`).once('value', snap => {
-    const arr = snap.val() || [];
-    arr.push(todo);
-    db.ref(`calendarTodos/${date}`).set(arr, renderCalendar);
-    if (date === new Date().toISOString().slice(0, 10)) renderTodayTodoCard();
-    calendarForm.reset();
-  });
-};
-renderCalendar();
 
-// ==================== 代辦事項區塊 + 番茄鐘 ====================
-const todoForm = document.getElementById('todo-form');
-const todoInput = document.getElementById('todo-input');
-const todoList = document.getElementById('todo-list');
-
-// 讀取
-function renderTodoList() {
-  db.ref('todos').once('value', snap => {
-    const arr = snap.val() || [];
-    todoList.innerHTML = '';
-    // 先分成未完成與已完成
-    const uncompleted = [];
-    const completed = [];
-    arr.forEach((item, idx) => {
-      if (item.completed) {
-        completed.push({ ...item, idx });
-      } else {
-        uncompleted.push({ ...item, idx });
-      }
-    });
-    // 未完成逆序（新加在最上面），已完成正序
-    uncompleted.reverse();
-    // 合併
-    const orderedTodos = [...uncompleted, ...completed];
-    orderedTodos.forEach((item) => {
-      const li = document.createElement('li');
-      li.className = 'todo-item' + (item.completed ? ' completed' : '');
-      // checkbox
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.className = 'todo-checkbox';
-      checkbox.checked = !!item.completed;
-      checkbox.onchange = () => {
-        // 找原本 index
-        db.ref('todos').once('value', snap2 => {
-          const arr2 = snap2.val() || [];
-          arr2[item.idx].completed = checkbox.checked;
-          db.ref('todos').set(arr2, renderTodoList);
-        });
-      };
-      // 文字
-      const span = document.createElement('span');
-      span.textContent = item.text;
-      // 刪除
-      const del = document.createElement('button');
-      del.className = 'todo-delete';
-      del.textContent = '✖';
-      del.onclick = () => {
-        db.ref('todos').once('value', snap2 => {
-          const arr2 = snap2.val() || [];
-          arr2.splice(item.idx, 1);
-          db.ref('todos').set(arr2, renderTodoList);
-        });
-      };
-      li.appendChild(checkbox);
-      li.appendChild(span);
-      li.appendChild(del);
-      todoList.appendChild(li);
+// 刪除事項函式
+function deleteEvent(date, idx) {
+  db.ref(`calendarTodos/${date}`).once('value').then(snap => {
+    let arr = snap.val() || [];
+    arr.splice(idx, 1);
+    db.ref(`calendarTodos/${date}`).set(arr).then(() => {
+      renderEventList(date);
+      updateCalendarEventDot(date, arr.length);
     });
   });
 }
-todoForm.onsubmit = e => {
-  e.preventDefault();
-  const text = todoInput.value.trim();
-  if (!text) return;
-  db.ref('todos').once('value', snap => {
-    const arr = snap.val() || [];
-    arr.push({ text, completed: false });
-    db.ref('todos').set(arr, renderTodoList);
-    todoForm.reset();
+
+function updateCalendarEventDot(date, count) {
+  const [year, month, day] = date.split('-');
+  const curYear = currentMonth.getFullYear();
+  const curMonth = currentMonth.getMonth() + 1;
+  if (parseInt(year) !== curYear || parseInt(month) !== curMonth) return;
+
+  const daysContainer = document.getElementById('calendar-days');
+  const dayBoxes = daysContainer.querySelectorAll('div');
+
+  const box = Array.from(dayBoxes).find(div => {
+    const dayNum = div.querySelector('.day-number');
+    return dayNum && parseInt(dayNum.textContent) === parseInt(day)
+      && !div.classList.contains('other-month');
   });
+
+  if (!box) return;
+
+  const oldDot = box.querySelector('.calendar-event-count');
+  if (oldDot) oldDot.remove();
+  if (count > 0) {
+    const dot = document.createElement('div');
+    dot.className = 'calendar-event-count';
+    dot.innerHTML = `<span class="pin-emoji">📌</span>${count}`;
+    box.appendChild(dot);
+  }
+}
+
+// 新增事項（支援Enter/按鈕）
+document.getElementById('event-form').onsubmit = function(e) {
+  e.preventDefault();
+  saveEvent();
 };
-renderTodoList();
-db.ref('todos').on('value', renderTodoList);
+document.getElementById('event-desc').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    saveEvent();
+  }
+});
+function saveEvent() {
+  const date = document.getElementById('event-date').value;
+  const desc = document.getElementById('event-desc').value.trim();
+  if (!date || !desc) return;
+  db.ref(`calendarTodos/${date}`).once('value').then(snap => {
+    const arr = snap.val() || [];
+    arr.push(desc);
+    db.ref(`calendarTodos/${date}`).set(arr).then(() => {
+      document.getElementById('event-desc').value = '';
+      selectedDate = date;
+      renderEventList(date);
+      updateCalendarEventDot(date, arr.length);
+    });
+  });
+}
+
+// 月份切換（這時才重建日曆）
+document.getElementById('prev-month').onclick = () => {
+  currentMonth.setMonth(currentMonth.getMonth() - 1);
+  renderCalendar();
+};
+document.getElementById('next-month').onclick = () => {
+  currentMonth.setMonth(currentMonth.getMonth() + 1);
+  renderCalendar();
+};
+
+// 頁面初始：預設選今天
+window.addEventListener('DOMContentLoaded', () => {
+  selectedDate = getLocalDateStr(new Date());
+  document.getElementById('event-date').value = selectedDate;
+  document.getElementById('event-date-fake').value = showMonthDay(selectedDate);
+  renderCalendar();
+  renderEventList(selectedDate);
+});
+
+const realDate = document.getElementById('event-date');
+const fakeDate = document.getElementById('event-date-fake');
+function showMonthDay(val) {
+  if (!val) return '';
+  const [y,m,d] = val.split('-');
+  return `${parseInt(m)} / ${parseInt(d)}`;
+}
+function syncDateInputs(val) {
+  fakeDate.value = showMonthDay(val);
+}
+realDate.addEventListener('input', function() {
+  syncDateInputs(this.value);
+});
+syncDateInputs(realDate.value);
+
+fakeDate.addEventListener('click', ()=>realDate.showPicker && realDate.showPicker());
 
 // ==================== 番茄鐘 ====================
 let workMinutes = 50, restMinutes = 10, cycleTimes = 1;
@@ -311,7 +335,6 @@ function updatePomo() {
   const sec = (pomoTime % 60).toString().padStart(2, '0');
   pomoDisplay.textContent = `${min}:${sec}`;
 }
-
 // 調整功能
 function renderSettings() {
   document.getElementById('work-minutes').textContent = workMinutes;
