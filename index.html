@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>可愛日常管家</title>
+  <title>日常管家</title>
   <link rel="stylesheet" href="style.css">
   <!-- Firebase CDN -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -23,9 +23,28 @@
   <!-- 首頁 -->
   <section id="home" class="page">
     <div class="welcome">
-      <h1>歡迎使用可愛日常管家！</h1>
-      <p>讓我陪你一起規劃生活，每天都充滿動力！</p>
+      <h1>歡迎使用日常管家！</h1>
       <button id="start-btn" class="cute-btn" onclick="document.getElementById('cards').scrollIntoView({behavior:'smooth'})">開始使用</button>
+      <div class="fruit-row">
+        <!-- Pineapple -->
+        <div class="fruit-min pineapple-min">
+          <div class="min-leaf pineapple-leaf"></div>
+          <div class="min-body pineapple-body"></div>
+          <div class="min-eyes"></div>
+        </div>
+        <!-- Tomato -->
+        <div class="fruit-min tomato-min">
+          <div class="min-leaf tomato-leaf"></div>
+          <div class="min-body tomato-body"></div>
+          <div class="min-eyes"></div>
+        </div>
+        <!-- Guava -->
+        <div class="fruit-min guava-min">
+          <div class="min-leaf guava-leaf"></div>
+          <div class="min-body guava-body"></div>
+          <div class="min-eyes"></div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -70,16 +89,13 @@
           <span>calendar</span>
         </div>
         <form id="event-form">
-          <div class="event-form-col">
-            <label for="event-date-fake">日期</label>
+          <div class="event-form-row row-date">
+            <label for="event-date-fake" class="event-label-date">日期</label>
             <input type="date" id="event-date" style="display:none;">
             <input type="text" id="event-date-fake" readonly placeholder="月/日" />
           </div>
-          <div class="event-form-col">
-            <label for="event-desc">事項</label>
+          <div class="event-form-row row-task">
             <textarea id="event-desc" maxlength="50" required placeholder="請輸入事項"></textarea>
-          </div>
-          <div class="event-form-col event-form-btn-col">
             <button type="submit">新增</button>
           </div>
         </form>

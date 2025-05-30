@@ -78,18 +78,33 @@ function launchFireworks() {
   const cx = container.offsetWidth / 2 || 200;
   const cy = 80;
   const R = 60;
+  // 煙火樣式
   for (let i = 0; i < numFireworks; i++) {
     const angle = 2 * Math.PI * (i / numFireworks);
     const tx = Math.cos(angle) * R;
     const ty = Math.sin(angle) * R;
     const span = document.createElement('span');
     span.className = 'firework ' + colors[i % colors.length];
+    span.style.position = 'absolute';
     span.style.left = cx + 'px';
     span.style.top = cy + 'px';
-    span.style.setProperty('--tx', `${tx}px`);
-    span.style.setProperty('--ty', `${ty}px`);
+    span.style.width = '10px';
+    span.style.height = '10px';
+    span.style.borderRadius = '50%';
+    span.style.background = colors[i % colors.length];
+    span.style.opacity = '0.8';
+    span.style.transform = 'translate(-50%, -50%) scale(1)';
+    span.style.transition = 'transform 0.8s cubic-bezier(0.2,1.2,0.3,1), opacity 1s';
     container.appendChild(span);
-    setTimeout(() => span.remove(), 1000);
+
+    setTimeout(() => {
+      span.style.transform = `translate(${tx}px, ${ty}px) scale(0.3)`;
+      span.style.opacity = '0';
+    }, 30);
+
+    setTimeout(() => {
+      if (span && span.parentNode) span.parentNode.removeChild(span);
+    }, 1200);
   }
 }
 
@@ -183,9 +198,9 @@ function renderCalendar() {
       if (selectedDate === thisDate) {
         day.classList.add('selected-day');
       }
-      // 有事項則顯示📌+數量（修正：加 span.pin-emoji 以利CSS置中）
+      // 有事項則顯示📌+數量
       if (allTodos[thisDate] && allTodos[thisDate].length > 0) {
-        day.innerHTML += `<div class="calendar-event-count"><span class="pin-emoji">📌</span>${allTodos[thisDate].length}</div>`;
+        day.innerHTML += `<div class="calendar-event-count"><span class="pin-emoji">📌</span><span class="pin-count">${allTodos[thisDate].length}</span></div>`;
       }
       // 點選後只切換選中狀態（不重建整個日曆）
       day.onclick = () => {
@@ -207,12 +222,38 @@ function renderEventList(date) {
     const list = snap.val() || [];
     const el = document.getElementById('event-list');
     if (list.length) {
-      el.innerHTML = `<ul>${list.map((item, idx) => `
-        <li>
-          ${item}
-          <button class="event-delete-btn" title="刪除" onclick="deleteEvent('${date}', ${idx})">&times;</button>
-        </li>
-      `).join('')}</ul>`;
+      const ul = document.createElement('ul');
+      ul.style.listStyle = 'none';
+      ul.style.padding = '0';
+      ul.style.margin = '0';
+      list.forEach((desc, idx) => {
+        const li = document.createElement('li');
+        li.style.display = 'flex';
+        li.style.alignItems = 'center';
+        li.style.marginBottom = '12px';
+
+        const contentSpan = document.createElement('span');
+        contentSpan.textContent = `📌 ${desc}`;
+        contentSpan.style.flex = '1';
+        contentSpan.style.whiteSpace = 'nowrap';
+        contentSpan.style.overflow = 'hidden';
+        contentSpan.style.textOverflow = 'ellipsis';
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = '❌';
+        deleteBtn.style.border = 'none';
+        deleteBtn.style.background = 'transparent';
+        deleteBtn.style.cursor = 'pointer';
+        deleteBtn.style.marginLeft = '10px';
+        deleteBtn.title = '刪除該行程';
+        deleteBtn.onclick = () => deleteEvent(date, idx);
+
+        li.appendChild(contentSpan);
+        li.appendChild(deleteBtn);
+        ul.appendChild(li);
+      });
+      el.innerHTML = '';
+      el.appendChild(ul);
     } else {
       el.innerHTML = "<div class='empty'>（此日暫無事項）</div>";
     }
@@ -253,7 +294,7 @@ function updateCalendarEventDot(date, count) {
   if (count > 0) {
     const dot = document.createElement('div');
     dot.className = 'calendar-event-count';
-    dot.innerHTML = `<span class="pin-emoji">📌</span>${count}`;
+    dot.innerHTML = `<span class="pin-emoji">📌</span><span class="pin-count">${count}</span>`;
     box.appendChild(dot);
   }
 }
@@ -320,6 +361,90 @@ realDate.addEventListener('input', function() {
 syncDateInputs(realDate.value);
 
 fakeDate.addEventListener('click', ()=>realDate.showPicker && realDate.showPicker());
+
+// ==================== 代辦區塊 ====================
+
+// 支援 Enter 快速儲存
+document.getElementById('todo-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    document.querySelector('#todo-form button[type="submit"]').click();
+  }
+});
+
+// 代辦表單提交
+document.getElementById('todo-form').onsubmit = function(e) {
+  e.preventDefault();
+  saveTodo();
+};
+
+function saveTodo() {
+  const input = document.getElementById('todo-input');
+  const text = input.value.trim();
+  if (!text) return;
+  // 將 todo 儲存到 localStorage，或你可以改為存到 firebase
+  addTodoItem(text);
+  input.value = '';
+}
+
+// 代辦清單渲染與本地暫存
+function getTodoList() {
+  let list = [];
+  try {
+    list = JSON.parse(localStorage.getItem('todo-list') || '[]');
+  } catch (e) {}
+  return list;
+}
+function setTodoList(list) {
+  localStorage.setItem('todo-list', JSON.stringify(list));
+}
+function addTodoItem(text) {
+  const list = getTodoList();
+  list.push({text, completed: false});
+  setTodoList(list);
+  renderTodoList();
+}
+function toggleTodo(idx) {
+  const list = getTodoList();
+  list[idx].completed = !list[idx].completed;
+  setTodoList(list);
+  renderTodoList();
+}
+function deleteTodo(idx) {
+  const list = getTodoList();
+  list.splice(idx, 1);
+  setTodoList(list);
+  renderTodoList();
+}
+function renderTodoList() {
+  const ul = document.getElementById('todo-list');
+  const list = getTodoList();
+  ul.innerHTML = '';
+  list.forEach((item, idx) => {
+    const li = document.createElement('li');
+    li.className = 'todo-item' + (item.completed ? ' completed' : '');
+    const markBtn = document.createElement('button');
+    markBtn.className = 'mark-btn';
+    markBtn.textContent = item.completed ? '✔️' : '⬜';
+    markBtn.title = item.completed ? '取消完成' : '標記完成';
+    markBtn.onclick = () => toggleTodo(idx);
+
+    const span = document.createElement('span');
+    span.className = 'todo-text';
+    span.textContent = item.text;
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'delete-btn';
+    delBtn.textContent = '❌';
+    delBtn.onclick = () => deleteTodo(idx);
+
+    li.appendChild(markBtn);
+    li.appendChild(span);
+    li.appendChild(delBtn);
+    ul.appendChild(li);
+  });
+}
+renderTodoList();
 
 // ==================== 番茄鐘 ====================
 let workMinutes = 50, restMinutes = 10, cycleTimes = 1;
